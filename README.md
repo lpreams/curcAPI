@@ -2,6 +2,12 @@
 
 How to get started:
 
+# tldr
+
+Configure Eclipse with Gradle and Eclipse WTP, add a Tomcat8.5 server, run the project on the server.
+
+## Full Instructions
+
 1. Install Eclipse (recommended to use latest Eclipse Oxygen release)
     - Also check for updates, Help > Check for Updates
 
