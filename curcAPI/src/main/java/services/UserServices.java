@@ -1,6 +1,9 @@
 package services;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
@@ -28,9 +31,9 @@ import user.UserFacade;
 @Path("/user")
 public class UserServices {
 
-	
+	@Path("users")
 	@GET
-	@Produces("text/plain")
+	@Produces(MediaType.APPLICATION_JSON+"; charset=UTF-8")
 	/**
 	 * Send all users in the database to the app
 	 * @return ArrayList of Users
@@ -57,9 +60,9 @@ public class UserServices {
 		}
 	}
 	
-	@Path("user")
+	@Path("username")
 	@GET
-	@Produces("text/plain")
+	@Produces(MediaType.APPLICATION_JSON+"; charset=UTF-8")
 	/**
 	 * Return a User object retrieved from the database by username
 	 * @param username
@@ -75,8 +78,8 @@ public class UserServices {
 		ArrayList<User> resultArray = iFacade.getUserByUsername(username);
 		
 		if(resultArray != null) {
-			Gson theGsonObj = new Gson();
-			String result = theGsonObj.toJson(resultArray);
+			Gson gsonObj = new Gson();
+			String result = gsonObj.toJson(resultArray);
 			
 			ResponseBuilder rb = Response.ok(result, MediaType.TEXT_PLAIN);
 			rb.status(200);
@@ -88,9 +91,29 @@ public class UserServices {
 		
 	}
 	
-	@Path("create")
+	@Path("authenticate")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON +"; charset=UTF-8")
+	public Response authenticateUser(@QueryParam("username") String username, @QueryParam("password") String password) throws NamingException, SQLException, ClassNotFoundException {
+		UserFacade iFacade = UserFacade.getInstance();
+		
+		ArrayList<User> resultArray = iFacade.authenticateUser(username, password);
+		
+		if(resultArray != null) {
+			Gson gsonObj = new Gson();
+			String result = gsonObj.toJson(resultArray);
+			
+			ResponseBuilder rb = Response.ok(result, MediaType.TEXT_PLAIN);
+			rb.status(200);
+			return rb.build();
+		}
+		else {
+			return Response.status(401).build();
+		}
+	}
+	
 	@POST
-	@Produces("text/plain")
+	@Produces(MediaType.APPLICATION_JSON+"; charset=UTF-8")
 	@Consumes("application/x-www-form-urlencoded")
 	/**
 	 * Insert a new User into the database
@@ -100,15 +123,21 @@ public class UserServices {
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 */
-	public Response createUser(MultivaluedMap<String, String> formFields) throws NamingException, SQLException, ClassNotFoundException {
+	public Response createUser(MultivaluedMap<String, String> formFields) 
+			throws NamingException, SQLException, ClassNotFoundException, ParseException {
 		
 		UserFacade iFacade = UserFacade.getInstance();
-		String fName = formFields.getFirst("fName");
-		String lName = formFields.getFirst("lName");
 		String username = formFields.getFirst("username");
 		String password = formFields.getFirst("password");
+		String lName = formFields.getFirst("lName");
+		String fName = formFields.getFirst("fName");
+		String mName = formFields.getFirst("mName");
+		String dob = formFields.getFirst("dob");
+		String credentials = formFields.getFirst("credentials");
+		String licenseNum = formFields.getFirst("licenseNum");
+		String accessLevel = formFields.getFirst("accessLevel");
 		
-		User user = new User(fName, lName, username, password);
+		User user = new User(username, password, lName, fName, mName, dob, credentials, licenseNum, accessLevel);
 		
 		ArrayList<User> resultArray = iFacade.createUser(user);
 		
@@ -125,16 +154,5 @@ public class UserServices {
 		}
 		
 	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-
-
 
 }

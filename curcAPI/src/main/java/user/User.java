@@ -1,6 +1,8 @@
 package user;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * A class to represent a user who has access to the database
@@ -10,14 +12,16 @@ import java.sql.Date;
 public class User {
 
 	private int user_id;
-	private String fName;
+	private final String username;
+	private String password;
 	private String lName;
+	private String fName;
 	private String mName;
-	private Date birth;
+	private Date dob;
 	private String credentials;
 	private String licenseNum;
-	private final String username;
-	private String password; //has this
+	private String accessLevel;
+	
 	private static ArrayList<User> userList;
 	
 	/**
@@ -27,12 +31,25 @@ public class User {
 	 * @param username The user username
 	 * @param password The user password
 	 */
-	public User(String fName, String lName, String username, String password) {
-		 this.fName = fName;
-		 this.lName = lName;
-		 this.username = username;
-		 this.password = password;
+	public User(String username, String password, String lName, String fName, String mName, 
+			String bDay, String credentials, String licenseNum, String accessLevel) {
 		 
+		SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
+		
+		this.username = username;
+		this.password = password;
+		this.lName = lName;
+		this.fName = fName;
+		this.mName = mName; 
+		try {
+			this.dob = (Date)simpleDate.parse(bDay);
+		} catch (Exception e) {
+			//add handling
+		}
+		this.credentials = credentials;
+		this.licenseNum = licenseNum;
+		this.accessLevel = accessLevel;
+		userList.add(this);
 	}
 	
 	/**
@@ -43,130 +60,43 @@ public class User {
 	 * @param username The user username
 	 * @param password
 	 */
-	User(int user_id, String fName, String lName, String username, String password) {
+	User(int user_id, String username, String lName, String fName, String accessLevel) {
 		this.user_id = user_id;
-		this.fName = fName;
-		this.lName = lName;
 		this.username = username;
-		this.password = password;
-	}
-	
-	/**
-	 * 
-	 * @return user_id
-	 */
-	int getUserID() {
-		return this.user_id;
-	}
-	
-	/**
-	 * 
-	 * @return fName
-	 */
-	String getfName() {
-		return this.fName;
-	}
+		this.fName = lName;
+		this.lName = fName;
+		this.accessLevel = accessLevel;
 
-	/**
-	 * Set fName
-	 * @param fName The new first name
-	 */
-	void setfName(String fName) {
-		this.fName = fName;
 	}
 	
-	/**
-	 * 
-	 * @return lName
-	 */
-	String getlName() {
-		return this.lName;
-	}
+
+	int getUserID() { return this.user_id; }
 	
-	/**
-	 * Set lName
-	 * @param lName
-	 */
-	void setlName(String lName) {
-		this.lName = lName;
-	}
+	String getfName() {	return this.fName; }
+	void setfName(String fName) { this.fName = fName; }
 	
-	/**
-	 * 
-	 * @return username
-	 */
-	String getUsername() {
-		return this.username;
-	}
+	String getlName() {	return this.lName; }
+	void setlName(String lName) { this.lName = lName; }
 	
-	/**
-	 * 
-	 * @return password
-	 */
-	String getPassword() {
-		return this.password;
-	}
+	String getmName() { return this.mName; }
+	void setmName(String mName) { this.mName = mName; }
 	
-	/**
-	 * Set password
-	 * @param password The new password
-	 */
-	void setPassword(String password) {
-		this.password = password;
-	}
+	String getUsername() { return this.username; }
+
+	String getPassword() { return this.password; }
+	void setPassword(String password) {	this.password = password; }
+
+	Date getBDay() { return this.dob; }
+	void setBDay(Date bDay) { this.dob = bDay; }
+
+	String getCredentials() { return this.credentials; }
+	void setCredentials(String credentials) { this.credentials = credentials; }
 	
-	/**
-	 * 
-	 * @return User birthday
-	 */
-	Date getBDay() {
-		return this.birth;
-	}
+	String getLicense() { return this.licenseNum; }
+	void setLicense(String license) { this.licenseNum = license; }
 	
-	/**
-	 * 
-	 * @param bDay The user birthday
-	 */
-	void setBDay(Date bDay) {
-		this.birth = bDay;
-	}
-	
-	/**
-	 * 
-	 * @return credentials
-	 */
-	String getCredentials() {
-		return this.credentials;
-	}
-	
-	/**
-	 * The credentials represent the certifications held 
-	 * by a user (i.e. degrees, medical licenses, etc..)
-	 * @param credentials
-	 */
-	void setCredentials(String credentials) {
-		this.credentials = credentials;
-	}
-	
-	/**
-	 * 
-	 * @return licenseNum
-	 */
-	String getLicense() {
-		return this.licenseNum;
-	}
-	
-	/**
-	 * The professional license number of a 
-	 * user, if they hold one
-	 * @param license
-	 */
-	void setLicense(String license) {
-		//make sure credentials are set as well 
-		//if entering a license
-		
-		this.licenseNum = license;
-	}
+	String getAccesslevel() { return this.getAccesslevel(); }
+	void setAccessLevel(String accessLevel) { this.accessLevel = accessLevel; }
 	
 	
 	

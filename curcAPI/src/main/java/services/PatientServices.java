@@ -1,13 +1,18 @@
 package services;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.naming.NamingException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
@@ -19,30 +24,10 @@ import patient.PatientFacade;
 @Path("")
 public class PatientServices {
 
-	@Path("/patients")
+	@Path("patients")
 	@GET
-	@Produces
-	public Response getPatients() throws NamingException, SQLException, ClassNotFoundException {
-		
-		PatientFacade iFacade = PatientFacade.getInstance();
-		
-		ArrayList<Patient> resultArray = iFacade.getPatients();
-		
-		if(resultArray != null) {
-			Gson gsonObj = new Gson();
-			String result = gsonObj.toJson(resultArray);
-			
-			ResponseBuilder rb = Response.ok(result, MediaType.TEXT_PLAIN);
-			rb.status(200);
-			return rb.build();
-		}
-		else {
-			return Response.status(700).build();
-		}
-		
-	}
-
-	public Response getPatientByName(@QueryParam("fName") String fName, @QueryParam("lName") String lName) throws NamingException, SQLException, ClassNotFoundException {
+	@Produces(MediaType.APPLICATION_JSON+"; charset=UTF-8")
+	public Response getPatientByName(@QueryParam("lName") String lName, @QueryParam("fName") String fName) throws NamingException, SQLException, ClassNotFoundException {
 		PatientFacade iFacade = PatientFacade.getInstance();
 		ArrayList<Patient> resultArray = iFacade.getPatientByName(fName, lName);
 		
@@ -59,4 +44,78 @@ public class PatientServices {
 		}
 	}
 
+	@Path("patients/{id}")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON+"; charset=UTF-8")
+	public Response getPatientByID(@PathParam("id") int id) throws NamingException, SQLException, ClassNotFoundException {
+		
+		PatientFacade iFacade = PatientFacade.getInstance();
+		ArrayList<Patient> resultArray = iFacade.getPatientByID(id);
+		
+		if(resultArray != null) {
+			Gson gsonObj = new Gson();
+			String result = gsonObj.toJson(resultArray);
+			
+			ResponseBuilder rb = Response.ok(result, MediaType.APPLICATION_JSON);
+			rb.status(200);
+			return rb.build();
+		}
+		else {
+			return Response.status(700).build();
+		}		
+	}
+	
+	@POST
+	@Produces(MediaType.APPLICATION_JSON+"; charset=UTF-8")
+	@Consumes("application/x-www-form-urlencoded")
+	public Response createPatient(MultivaluedMap<String, String> formFields) throws NamingException, SQLException, ClassNotFoundException {
+	
+		PatientFacade iFacade = PatientFacade.getInstance();
+		String lName = formFields.getFirst("lName");
+		String fName = formFields.getFirst("fName");
+		String mName = formFields.getFirst("mName");
+		String bDay = formFields.getFirst("bDay");
+		String provider = formFields.getFirst("provID");
+		String gender = formFields.getFirst("gender");
+		
+		int provID = Integer.parseInt(provider);
+		
+		Patient patient = new Patient(lName, fName, mName, bDay, provID, gender);
+		
+		ArrayList<Patient> resultArray = iFacade.createPatient(patient);
+		
+		if(resultArray != null) {
+			Gson gsonObj = new Gson();
+			String result = gsonObj.toJson(resultArray);
+			
+			ResponseBuilder rb = Response.ok(result, MediaType.TEXT_PLAIN);
+			rb.status(201);
+			return rb.build();
+		}
+		else {
+			return Response.status(700).build();
+		}
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
