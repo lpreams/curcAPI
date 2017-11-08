@@ -20,7 +20,7 @@ import com.google.gson.Gson;
 import provider.Provider;
 import provider.ProviderFacade;
 
-@Path("/provider")
+@Path("provider")
 public class ProviderServices {
 	
 	@Path("providers")

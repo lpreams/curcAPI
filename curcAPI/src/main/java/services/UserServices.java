@@ -28,7 +28,7 @@ import user.UserFacade;
  * @author Alex
  *
  */
-@Path("/user")
+@Path("user")
 public class UserServices {
 
 	@Path("users")
@@ -112,7 +112,8 @@ public class UserServices {
 		}
 	}
 	
-	@POST
+	@Path("create_user")
+	@POST()
 	@Produces(MediaType.APPLICATION_JSON+"; charset=UTF-8")
 	@Consumes("application/x-www-form-urlencoded")
 	/**

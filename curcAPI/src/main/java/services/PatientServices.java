@@ -21,7 +21,7 @@ import com.google.gson.Gson;
 import patient.Patient;
 import patient.PatientFacade;
 
-@Path("")
+@Path("patient")
 public class PatientServices {
 
 	@Path("patients")

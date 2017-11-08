@@ -133,7 +133,7 @@ public class UserFacade {
 		Connection con = uao.getConnection();
 		Class.forName("org.h2.Driver");
 
-		PreparedStatement stmt = con.prepareStatement("SELECT userID, username, userLName, userFName, userAccessLevel WHERE username=?"); 
+		PreparedStatement stmt = con.prepareStatement("SELECT userID, username, userLName, userFName, userAccessLevel FROM user WHERE username=?"); 
 				stmt.setString(1, uname); 
 				ResultSet rs = stmt.executeQuery();
 				
