@@ -1,7 +1,6 @@
 package patient;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 
 /**
  * A class to represent a patient in the clinic
@@ -14,13 +13,12 @@ public class Patient {
 	private String lName;
 	private String fName;
 	private String mName;
-	private Date dob;
-	private Date dod = null;
+	private java.sql.Date dob;
+	private java.sql.Date dod = null;
 	private int provID;
 //	private int homePhone;
 //	private int cellPhone;
 	private String gender;
-	private static ArrayList<Patient> patientList;
 	
 	/**
 	 * Create a patient object containing information about a 
@@ -34,8 +32,7 @@ public class Patient {
 	 * @param provID The patient provider
 	 * @param gender The patient gender
 	 */
-	Patient(int id, String lName, String fName, String mName, Date bDay, Date dDay, int provID, String gender) {
-		SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
+	Patient(int id, String lName, String fName, String mName, java.sql.Date bDay, java.sql.Date dDay, int provID, String gender) {
 		
 		this.pt_id = id;
 		this.fName = fName;
@@ -44,7 +41,7 @@ public class Patient {
 		this.dob = bDay;
 		this.dod = dDay;
 		this.provID = provID;
-		this.gender = gender;
+		this.gender = gender.toUpperCase();
 	}
 
 	
@@ -60,34 +57,35 @@ public class Patient {
 	public Patient(String lName, String fName, String mName, String bDay, int provID, String gender) {
 
 		SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
-		
 		this.lName = lName;		
 		this.fName = fName;
 		this.mName = mName;
 		try {
-			this.dob = (Date)simpleDate.parse(bDay);
+			java.util.Date parsed = simpleDate.parse(bDay);
+			this.dob = new java.sql.Date(parsed.getTime());
 		} catch (Exception e) {
-			//add handling
+			e.printStackTrace();
 		}	
 		this.provID = provID;
-		this.gender = gender;		
+		this.gender = gender.toUpperCase();		
 	}	
 	
-	Patient(int pt_id, String fName, String mName, String lName, String bDay, int provID, String gender) {
+	Patient(int pt_id, String lName, String fName, String mName, Date bDay, int provID, String gender) {
 
 		SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
+		String birth = bDay.toString();
 		
 		this.lName = lName;		
 		this.fName = fName;
 		this.mName = mName;
 		try {
-			this.dob = (Date)simpleDate.parse(bDay);
+			java.util.Date parsed = simpleDate.parse(birth);
+			this.dob = new java.sql.Date(parsed.getTime());
 		} catch (Exception e) {
-			//add handling
+			e.printStackTrace();
 		}	
 		this.provID = provID;
-		this.gender = gender;		
-		patientList.add(this);
+		this.gender = gender.toUpperCase();		
 	}	
 
 	int getID() { return this.pt_id; }
@@ -104,17 +102,13 @@ public class Patient {
 	String getGender() { return this.gender; }
 	void setGender(String gender) { this.gender = gender; }
 
-	Date getbDay() { return this.dob; }
-	void setbDay(Date bDay) { this.dob = bDay; }
+	java.sql.Date getbDay() { return this.dob; }
+	void setbDay(java.sql.Date bDay) { this.dob = bDay; }
 	
-	Date getdDay() { return this.dod; }
-	void setdDay(Date dDay) { this.dod = dDay; }
+	java.sql.Date getdDay() { return this.dod; }
+	void setdDay(java.sql.Date dDay) { this.dod = dDay; }
 			
 	int getprovID() { return this.provID; }
-    void setProvider(int provID) { this.provID = provID; }
-
-
-	ArrayList<Patient> getList() { return patientList; }
-			
+    void setProvider(int provID) { this.provID = provID; }	
 	
 }

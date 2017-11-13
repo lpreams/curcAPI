@@ -1,7 +1,7 @@
 package provider;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 
 /**
  * A class to represent a provider within the 
@@ -39,10 +39,11 @@ public class Provider {
 		this.fName = fName;
 		this.mName = mName;
 		try {
-			this.dob = (Date)simpleDate.parse(bDay);
+			java.util.Date parsed = simpleDate.parse(bDay);
+			this.dob = new java.sql.Date(parsed.getTime());
 		} catch (Exception e) {
-			//add handling
-		}
+			e.printStackTrace();
+		}	
 		this.credentials = credentials;
 		this.licenseNum = licenseNum;
 		this.npi = npi;
@@ -73,7 +74,7 @@ public class Provider {
 		
 	}
 	
-	int getID() { return this.providerID; }
+	public int getID() { return this.providerID; }
 	
 	String getLName() {	return this.lName; }
 	void setLName(String lName) { this.lName = lName; }
@@ -94,10 +95,7 @@ public class Provider {
 	void setNPI(String npi) { this.npi = npi; }
 	
 	Date getDOB() { return this.dob; }
-	void setDOB(Date dob) {
-		SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
-		this.dob = dob;
-	}
+	void setDOB(java.sql.Date dob) { this.dob = dob; }
 	
 	ArrayList<Provider> getList() {	return providerList; }
 	

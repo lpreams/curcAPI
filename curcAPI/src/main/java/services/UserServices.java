@@ -1,11 +1,6 @@
 package services;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
-import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -37,11 +32,8 @@ public class UserServices {
 	/**
 	 * Send all users in the database to the app
 	 * @return ArrayList of Users
-	 * @throws NamingException
-	 * @throws SQLException
-	 * @throws ClassNotFoundException
 	 */
-	public Response getUsers() throws NamingException, SQLException, ClassNotFoundException {
+	public Response getUsers() {
 		
 		UserFacade iFacade = UserFacade.getInstance();
 		
@@ -67,19 +59,16 @@ public class UserServices {
 	 * Return a User object retrieved from the database by username
 	 * @param username
 	 * @return The specified User object
-	 * @throws NamingException
-	 * @throws SQLException
-	 * @throws ClassNotFoundException
 	 */
-	public Response getUserByUsernameName(@QueryParam("username") String username) throws NamingException, SQLException, ClassNotFoundException {
+	public Response getUserByUsernameName(@QueryParam("username") String username) {
 		
 		UserFacade iFacade = UserFacade.getInstance();
 		
-		ArrayList<User> resultArray = iFacade.getUserByUsername(username);
+		User user = iFacade.getUserByUsername(username);
 		
-		if(resultArray != null) {
+		if(user != null) {
 			Gson gsonObj = new Gson();
-			String result = gsonObj.toJson(resultArray);
+			String result = gsonObj.toJson(user);
 			
 			ResponseBuilder rb = Response.ok(result, MediaType.TEXT_PLAIN);
 			rb.status(200);
@@ -94,14 +83,14 @@ public class UserServices {
 	@Path("authenticate")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON +"; charset=UTF-8")
-	public Response authenticateUser(@QueryParam("username") String username, @QueryParam("password") String password) throws NamingException, SQLException, ClassNotFoundException {
+	public Response authenticateUser(@QueryParam("username") String username, @QueryParam("password") String password) {
 		UserFacade iFacade = UserFacade.getInstance();
 		
-		ArrayList<User> resultArray = iFacade.authenticateUser(username, password);
+		User user = iFacade.authenticateUser(username, password);
 		
-		if(resultArray != null) {
+		if(user != null) {
 			Gson gsonObj = new Gson();
-			String result = gsonObj.toJson(resultArray);
+			String result = gsonObj.toJson(user);
 			
 			ResponseBuilder rb = Response.ok(result, MediaType.TEXT_PLAIN);
 			rb.status(200);
@@ -120,12 +109,8 @@ public class UserServices {
 	 * Insert a new User into the database
 	 * @param formFields The User object fields needed for the construction of the User object
 	 * @return The newly created User object, successfully retrieved from the database after insertion
-	 * @throws NamingException
-	 * @throws SQLException
-	 * @throws ClassNotFoundException
 	 */
-	public Response createUser(MultivaluedMap<String, String> formFields) 
-			throws NamingException, SQLException, ClassNotFoundException, ParseException {
+	public Response createUser(MultivaluedMap<String, String> formFields) {
 		
 		UserFacade iFacade = UserFacade.getInstance();
 		String username = formFields.getFirst("username");
@@ -140,11 +125,11 @@ public class UserServices {
 		
 		User user = new User(username, password, lName, fName, mName, dob, credentials, licenseNum, accessLevel);
 		
-		ArrayList<User> resultArray = iFacade.createUser(user);
+		User newUser = iFacade.createUser(user);
 		
-		if(resultArray != null) {
+		if(newUser != null) {
 			Gson theGsonObj = new Gson();
-			String result = theGsonObj.toJson(resultArray);
+			String result = theGsonObj.toJson(newUser);
 			
 			ResponseBuilder rb = Response.ok(result, MediaType.TEXT_PLAIN);
 			rb.status(201);

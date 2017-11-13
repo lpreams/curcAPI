@@ -1,7 +1,6 @@
 package services;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
@@ -50,11 +49,11 @@ public class PatientServices {
 	public Response getPatientByID(@PathParam("id") int id) throws NamingException, SQLException, ClassNotFoundException {
 		
 		PatientFacade iFacade = PatientFacade.getInstance();
-		ArrayList<Patient> resultArray = iFacade.getPatientByID(id);
+		Patient patient = iFacade.getPatientByID(id);
 		
-		if(resultArray != null) {
+		if(patient != null) {
 			Gson gsonObj = new Gson();
-			String result = gsonObj.toJson(resultArray);
+			String result = gsonObj.toJson(patient);
 			
 			ResponseBuilder rb = Response.ok(result, MediaType.APPLICATION_JSON);
 			rb.status(200);
@@ -82,11 +81,11 @@ public class PatientServices {
 		
 		Patient patient = new Patient(lName, fName, mName, bDay, provID, gender);
 		
-		ArrayList<Patient> resultArray = iFacade.createPatient(patient);
+		Patient newPatient = iFacade.createPatient(patient);
 		
-		if(resultArray != null) {
+		if(newPatient!= null) {
 			Gson gsonObj = new Gson();
-			String result = gsonObj.toJson(resultArray);
+			String result = gsonObj.toJson(newPatient);
 			
 			ResponseBuilder rb = Response.ok(result, MediaType.TEXT_PLAIN);
 			rb.status(201);
@@ -98,24 +97,4 @@ public class PatientServices {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -1,5 +1,4 @@
 package user;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,7 +43,7 @@ public class User {
 		try {
 			this.dob = (Date)simpleDate.parse(bDay);
 		} catch (Exception e) {
-			//add handling
+			e.printStackTrace();
 		}
 		this.credentials = credentials;
 		this.licenseNum = licenseNum;
@@ -97,9 +96,5 @@ public class User {
 	
 	String getAccesslevel() { return this.getAccesslevel(); }
 	void setAccessLevel(String accessLevel) { this.accessLevel = accessLevel; }
-	
-	
-	
-	
-	
+
 }

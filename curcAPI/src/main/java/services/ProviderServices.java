@@ -71,11 +71,11 @@ public class ProviderServices {
 	public Response getProviderByID(@QueryParam("id") int theID) throws NamingException, SQLException, ClassNotFoundException {
 
 		ProviderFacade iFacade = ProviderFacade.getInstance();
-		ArrayList<Provider> resultArray = iFacade.getProviderByID(theID);
+		Provider provider = iFacade.getProviderByID(theID);
 		
-		if(resultArray != null) {
+		if(provider != null) {
 			Gson gsonObj = new Gson();
-			String result = gsonObj.toJson(resultArray);
+			String result = gsonObj.toJson(provider);
 			
 			ResponseBuilder rb = Response.ok(result, MediaType.TEXT_PLAIN);
 			rb.status(200);
@@ -90,8 +90,7 @@ public class ProviderServices {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON+"; charset=UTF-8")
 	@Consumes("application/x-www-form-urlencoded")
-	public Response createProvider(MultivaluedMap<String, String> formFields)
-		throws NamingException, SQLException, ClassNotFoundException, ParseException {
+	public Response createProvider(MultivaluedMap<String, String> formFields) {
 		
 		ProviderFacade iFacade = ProviderFacade.getInstance();
 		String lName = formFields.getFirst("lName");
@@ -104,11 +103,11 @@ public class ProviderServices {
 		
 		Provider provider = new Provider(lName, fName, mName, credentials, licenseNum, npi, dob);
 		
-		ArrayList<Provider> resultArray = iFacade.createProvider(provider);
+		Provider newProvider = iFacade.createProvider(provider);
 		
-		if(resultArray != null) {
+		if(newProvider != null) {
 			Gson theGsonObj = new Gson();
-			String result = theGsonObj.toJson(resultArray);
+			String result = theGsonObj.toJson(newProvider);
 			
 			ResponseBuilder rb = Response.ok(result, MediaType.TEXT_PLAIN);
 			rb.status(201);
@@ -119,22 +118,3 @@ public class ProviderServices {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
