@@ -16,7 +16,6 @@ public class DatabaseAccess {
 //		Context envContext = (Context)initContext.lookup("java:/comp/env");
 //		this.datasource = (DataSource)envContext.lookup("jdbc/clinic");	
 		cp = JdbcConnectionPool.create("jdbc:h2:C:/Users/Alex/git/curcAPI", "sa", "");
-		
 	}
 	
 	public static DatabaseAccess getInstance() throws NamingException, SQLException {

@@ -6,134 +6,74 @@ import java.util.Date;
 import budget.Budget;
 import coordinator.Coordinator;
 import sponsor.Sponsor;
+import studyVisit.StudyVisit;
 import subject.Subject;
-import visit.Visit;
+import studyVisit.StudyVisit;
 
 public class Study {
 	
-	private final int studyID;
-	private final String protocol;
-	private Sponsor sponsor;
+	private int studyID;
+	private String protocol;
+	private int sponsorID;
 	private String name;
+	private int statusCode;
 	private String status;
-	private Date ote = null;
-	private Date cte = null;
-	private Date closed = null;
-	private ArrayList<Subject> subjects;
-	private ArrayList<Visit> visits;
-	private ArrayList<Budget> budgets;
-	private Coordinator coordinator;
+	private int coordinator;
 	private static ArrayList<Study> studyList;
 
 	
-	private Study(int studyID, String protocol, Sponsor sponsor, String name, String status) {
-		
+	private Study(String protocol, int sponsorID, String name, int statusCode) {
+		this.protocol = protocol;
+		this.sponsorID = sponsorID;
+		this.name = name;
+		this.statusCode = statusCode;
+	}
+	
+	
+	
+	/**
+	 * A class for representing a study object 
+	 * that has been returned from the database
+	 * @param studyID StudyID (primary key in database)
+	 * @param protocol The study protocol number
+	 * @param sponsor The study sponsor
+	 * @param name The study nickname
+	 * @param status The study status (0=upcoming, 1=open to enrollment, 2=closed to enrollment, 3=closed)
+	 */
+	Study(int studyID, String protocol, int sponsorID, String name, String status) {
 		this.studyID = studyID;
 		this.protocol = protocol;
-		this.sponsor = sponsor;
+		this.sponsorID = sponsorID;
 		this.name = name;
-		this.status = status; //if not upcoming, prompt for ote/cte/closed dates?
-		
-		subjects = new ArrayList<>();
-		visits = new ArrayList<>();
-		budgets = new ArrayList<>();	
-		
-		Study.studyList.add(this);
-		
+		this.status = status;		
 	}
 	
-	private int getStudyID() {
-		return this.studyID;
+	
+	private Study(int studyID, String protocol, int sponsorID, String name, String status, int coordinator) {
+		this.studyID = studyID;
+		this.protocol = protocol;
+		this.sponsorID = sponsorID;
+		this.name = name;
+		this.status = status;		
 	}
 	
-	private String getProtocol() {
-		return protocol;
-	}
 	
-	private Sponsor getSponsor() {
-		return sponsor;
-	}
+	public int getStudyID() { return this.studyID; }
+	String getProtocol() { return protocol; }
 	
-	private void setSponsor(Sponsor sponsor) {
-		this.sponsor = sponsor;
-	}
+	int getSponsorID() { return this.sponsorID; }	
+	private void setSponsor(int sponsorID) { this.sponsorID = sponsorID; }
 	
-	private int setStatus(String status, Date date) {
-
-		if(status.equalsIgnoreCase("upcoming")) {
-			this.status = status;
-			//do something here
-			return 1;
-		}else if(status.equalsIgnoreCase("ote")) {
-			this.status = status;
-			ote = date;
-			return 1;
-		}else if(status.equalsIgnoreCase("cte")) {
-			this.status = status;
-			cte = date;
-			return 1;
-		}else if(status.equalsIgnoreCase("closed")) {
-			this.status = status;
-			closed = date;
-			return 1;
-		}
-		
-		//else return some error code I guess?
-		return 0;
-	}
+	String getStudyName() { return this.name; }
+	private void setStudyName(String studyName) { this.name = name; }
 	
-	private String getStatus() {		
-		if(status.equalsIgnoreCase("upcoming")||status.equalsIgnoreCase("ote")||status.equalsIgnoreCase("cte") || status.equalsIgnoreCase("closed")){
-			return status;
-		} else {
-			return "Status not set";
-		}
-	}
+	int getStatusCode() { return this.statusCode; }
+	private void setStatusCode(int status) { this.statusCode = statusCode; }
 	
-	private int addSubject(Subject subject) {
-		//make sure subject isn't already in the list
-		int flag = subjects.indexOf(subject);
-		if(flag==-1) {
-			subjects.add(subject);
-			return 1;
-		} else{
-			//return some error code
-			return 0;
-		}
-	}
+	private String getStatus() { return this.status; }
 	
-	private Subject getSubject(Subject subject) {
-		int index = subjects.indexOf(subject);
-		return subjects.get(index);
-	}
-	
-
-	private int removeSubject(Subject subject) {
-		int index = subjects.indexOf(subject);
-		if(index==-1){
-			return 0;
-		} else{
-			subjects.remove(index);
-			return 1;
-		}
-	}
-
-	private int addBudget(Budget budget) {
-	//search for budget in list -- maybe by effective date or version?
-		budgets.add(budget);
-		return 1;	
-	}
-	
-	private Budget getBudget(Budget budget) {
-		//search for budget in array list
-		int index = budgets.indexOf(budget);
-		return budgets.get(index);
-	}
-	
-	private int setCoordinator(Coordinator coordinator) {
-		this.coordinator = coordinator;
-		return 1;
-	}
+	private int getCoordinator() { return this.coordinator; }
+	private void setCoordinator(int coordinator) { 	this.coordinator = coordinator; }
 	
 	
 }

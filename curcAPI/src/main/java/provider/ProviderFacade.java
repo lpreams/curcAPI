@@ -17,31 +17,22 @@ public class ProviderFacade {
 	private DatabaseAccess pao;
 	
 	public ProviderFacade() {
-		try{
-			this.pao = DatabaseAccess.getInstance();
-		} catch(NamingException | SQLException e) {
-			e.printStackTrace();
-		}
+		try{ this.pao = DatabaseAccess.getInstance(); } 
+		catch(NamingException | SQLException e) { e.printStackTrace(); }
 	}
 	
+	
 	public static ProviderFacade getInstance() {
-		if(singleton==null) {
-			singleton = new ProviderFacade();
-		}
-		
+		if(singleton==null) { singleton = new ProviderFacade(); }
 		return singleton;
 	}
 	
-	public ArrayList<Provider> getProviders() {
-			
-		try {
-			Class.forName("org.h2.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+	
+	public ArrayList<Provider> getProviders() {	
+		try { Class.forName("org.h2.Driver"); } 
+		catch (ClassNotFoundException e) { e.printStackTrace(); }
 		
 		ArrayList<Provider> providerArray = new ArrayList<Provider>();
-		int count = 0;
 		
 		try{
 			Connection con = pao.getConnection();
@@ -54,36 +45,25 @@ public class ProviderFacade {
 				String fName = rs.getString("provFName");
 				String credentials = rs.getString("provCredentials");
 				Provider provider = new Provider(prov_id, lName, fName, credentials);
-				providerArray.add(provider);
-				count++;
-			}
-			con.close();
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-		if(count>0) {
-			return providerArray;
-		}
-		else {
-			return null;
-		}
+				providerArray.add(provider); }
+			
+			con.close(); } 
+		catch(SQLException e) { e.printStackTrace(); }
+		return providerArray;
 	}
 
-	public ArrayList<Provider> getProviderByLName(String lastName) {
 	
-		try {
-			Class.forName("org.h2.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+	public ArrayList<Provider> getProviderByName(String lastName, String firstName) {
+		try { Class.forName("org.h2.Driver"); } 
+		catch (ClassNotFoundException e) { e.printStackTrace(); }
 				
 		ArrayList<Provider> providerArray = new ArrayList<Provider>();
-		int count = 0;
 		
 		try{
 			Connection con = pao.getConnection();
-			PreparedStatement stmt = con.prepareStatement("SELECT provID, provLName, provFName, provCredentials, provLicenseNum, provNPI FROM provider WHERE lName=?");
+			PreparedStatement stmt = con.prepareStatement("SELECT provID, provLName, provFName, provCredentials, provLicenseNum, provNPI FROM provider WHERE lName LIKE ? AND fName LIKE ?");
 			stmt.setString(1, lastName + "%");
+			stmt.setString(2, firstName + "%");
 			ResultSet rs = stmt.executeQuery();
 		
 			while(rs.next()) {
@@ -94,34 +74,19 @@ public class ProviderFacade {
 				String licenseNum = rs.getString("provLicenseNum");
 				String npi = rs.getString("provNPI");
 				Provider provider = new Provider(prov_id, lName, fName, credentials, licenseNum, npi);
-				providerArray.add(provider);
-				count++;
-			}
-			con.close();
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-		
-		if(count>0) {
-			return providerArray;
-		}
-		else {
-			return null;
-		}
-		
+				providerArray.add(provider); }
+			con.close(); } 
+		catch(SQLException e) { e.printStackTrace(); }
+		return providerArray;		
 	}
 	
+	
 	public Provider getProviderByID(int theID) {
-		
-		try {
-			Class.forName("org.h2.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+		try { Class.forName("org.h2.Driver"); } 
+		catch (ClassNotFoundException e) { e.printStackTrace(); }
 		
 		Provider provider = null;
-		int count = 0;
-		
+	
 		try{
 			Connection con = pao.getConnection();
 			PreparedStatement stmt = con.prepareStatement("SELECT provID, provLName, provFName, provCredentials, provLicenseNum, provNPI FROM provider WHERE id=?");
@@ -135,99 +100,57 @@ public class ProviderFacade {
 				String credentials = rs.getString("provCredentials");
 				String licenseNum = rs.getString("provLicenseNum");
 				String npi = rs.getString("provNPI");
-				provider = new Provider(prov_id, lName, fName, credentials, licenseNum, npi);
-				count++;
-			}
-			con.close();
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-		if(count>0) {
-			return provider;
-		}
-		else {
-			return null;
-		}
+				provider = new Provider(prov_id, lName, fName, credentials, licenseNum, npi); }
+			con.close(); } 
+		catch(SQLException e) { e.printStackTrace(); }
+		return provider;
 	}
 	
+	
 	public Provider createProvider(Provider provider) {
-		
-		try {
-			Class.forName("org.h2.Driver");
-		} catch (ClassNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		
-		String fName = provider.getFName();
-		String lName = provider.getLName();
-		String mName = provider.getMName();
-		String credentials = provider.getCredentials();
-		String licenseNum = provider.getLicense();
-		String npi = provider.getNPI();
-		Date dob = provider.getDOB();
-		
-		Connection con = null;
-		int res = 0;
+		try { Class.forName("org.h2.Driver"); } 
+		catch (ClassNotFoundException e1) { e1.printStackTrace(); }
+				
+		Provider newProvider = null;
 		
 		try{
-			con = pao.getConnection();
+			Connection con = pao.getConnection();
 			PreparedStatement createStmt = con.prepareStatement
 					("INSERT INTO provider (provID, provLName, provFName, provMName, provCredentials, provLicenseNum, provNPI, provDOB) VALUES (?,?,?,?,?,?,?,?)");
 			createStmt.setString(1, null);
-			createStmt.setString(2, lName);
-			createStmt.setString(3, fName);
-			createStmt.setString(4, mName);
-			createStmt.setString(5, credentials);
-			createStmt.setString(6, licenseNum);
-			createStmt.setString(7, npi);
-			createStmt.setDate(8, (java.sql.Date) dob);
-			res = createStmt.executeUpdate();
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}		 
-				
-		if(res==1) {
-			Provider newProvider = null;
-			int count = 0;
-			try{
+			createStmt.setString(2, provider.getLName());
+			createStmt.setString(3, provider.getFName());
+			createStmt.setString(4, provider.getMName());
+			createStmt.setString(5, provider.getCredentials());
+			createStmt.setString(6, provider.getLicense());
+			createStmt.setString(7, provider.getNPI());
+			createStmt.setDate(8, provider.getDOB());
+			int res = createStmt.executeUpdate();
+
+			if(res==1) {
 				PreparedStatement retrieveStmt = con.prepareStatement
 						("SELECT provID, provLName, provFName, provCredentials from provider WHERE provLame=? AND provFName=? AND provCredentials=? AND provLicenseNum=? AND provNPI=?");
-				retrieveStmt.setString(1, lName);
-				retrieveStmt.setString(2, fName);
-				retrieveStmt.setString(3, credentials);
-				retrieveStmt.setString(4, licenseNum);
-				retrieveStmt.setString(5, npi);
+				retrieveStmt.setString(1, provider.getLName());
+				retrieveStmt.setString(2, provider.getFName());
+				retrieveStmt.setString(3, provider.getCredentials());
+				retrieveStmt.setString(4, provider.getLicense());
+				retrieveStmt.setString(5, provider.getNPI());
 				ResultSet rs = retrieveStmt.executeQuery();
 
 				while(rs.next()) {
-					int new_id = rs.getInt("provID");
-					String new_lName = rs.getString("provLName");
-					String new_fName = rs.getString("provFName");
-					String new_credentials = rs.getString("provCredentials");
-					String new_license = rs.getString("provLicenseNum");
-					String new_npi = rs.getString("provNPI");
-					newProvider = new Provider(new_id, new_fName, new_lName, new_credentials, new_license, new_npi);
-					count++;
-				}
-				con.commit();
-				con.close();
-			}catch(SQLException e) {
-				e.printStackTrace();
-			}
-			if(count>0) {
-				return newProvider;
-			}
-			else {
-				return null;
-			}
-		}
-		else {
-			return null;
-		}
+					int id = rs.getInt("provID");
+					String lName = rs.getString("provLName");
+					String fName = rs.getString("provFName");
+					String credentials = rs.getString("provCredentials");
+					String license = rs.getString("provLicenseNum");
+					String npi = rs.getString("provNPI");
+					newProvider = new Provider(id, fName, lName, credentials, license, npi); } } } 
+		catch(SQLException e) { e.printStackTrace(); }
+		return newProvider;
 	}
 	
+	
 }
-
 
 
 

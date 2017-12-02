@@ -1,9 +1,6 @@
 package services;
-import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.ArrayList;
 
-import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -26,7 +23,7 @@ public class ProviderServices {
 	@Path("providers")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON+"; charset=UTF-8")
-	public Response getProviders() throws NamingException, SQLException, ClassNotFoundException {
+	public Response getProviders() {
 		
 		ProviderFacade iFacade = ProviderFacade.getInstance();
 		
@@ -39,18 +36,15 @@ public class ProviderServices {
 			ResponseBuilder rb = Response.ok(result, MediaType.TEXT_PLAIN);
 			rb.status(200);
 			return rb.build();
-		}
-		else {
-			return Response.status(700).build();
-		}	
+		} else return Response.status(700).build();	
 	}
 	
-	@Path("lName")
+	@Path("name")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON+"; charset=UTF-8")
-	public Response getProviderByLName(@QueryParam("lName") String lName) throws NamingException, SQLException, ClassNotFoundException {
+	public Response getProviderByName(@QueryParam("lName") String lName, @QueryParam("fName") String fName) {
 		ProviderFacade iFacade = ProviderFacade.getInstance();
-		ArrayList<Provider> resultArray = iFacade.getProviderByLName(lName);
+		ArrayList<Provider> resultArray = iFacade.getProviderByName(lName, fName);
 		
 		if(resultArray != null) {
 			Gson gsonObj = new Gson();
@@ -59,16 +53,13 @@ public class ProviderServices {
 			ResponseBuilder rb = Response.ok(result, MediaType.TEXT_PLAIN);
 			rb.status(200);
 			return rb.build();
-		}
-		else {
-			return Response.status(700).build();
-		}
+		} else return Response.status(700).build();
 	}
 	
 	@Path("id")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON+"; charset=UTF-8")
-	public Response getProviderByID(@QueryParam("id") int theID) throws NamingException, SQLException, ClassNotFoundException {
+	public Response getProviderByID(@QueryParam("id") int theID) {
 
 		ProviderFacade iFacade = ProviderFacade.getInstance();
 		Provider provider = iFacade.getProviderByID(theID);
@@ -80,11 +71,7 @@ public class ProviderServices {
 			ResponseBuilder rb = Response.ok(result, MediaType.TEXT_PLAIN);
 			rb.status(200);
 			return rb.build();
-		}
-		else {
-			return Response.status(700).build();
-		}
-		
+		} else return Response.status(700).build();		
 	}
 	
 	@POST
@@ -112,9 +99,6 @@ public class ProviderServices {
 			ResponseBuilder rb = Response.ok(result, MediaType.TEXT_PLAIN);
 			rb.status(201);
 			return rb.build();
-		}
-		else {
-			return Response.status(700).build();
-		}
+		} else return Response.status(700).build();
 	}
 }

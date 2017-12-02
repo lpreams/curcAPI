@@ -1,60 +1,50 @@
 package budget;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 
-import study.Study;
-import visit.Visit;
+import studyVisit.StudyVisit;
 
 public class Budget {
-	private final Study study;
+	
+	private int budgetID;
+	private int studyID;
 	private int version;
-	private static ArrayList<Visit> visits;
-	private Date startDate;
-	private Date stopDate;
+	private static ArrayList<StudyVisit> visits;
+	private java.sql.Date effectiveDate;
+	private java.sql.Date endDate;
 	
-	private Budget(int studyID, Study study, Date startDate){
-		this.study = study;
-		visits = new ArrayList<>();		
+	private transient SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
+	
+	private Budget(int studyID, int version, String effective){
+		this.studyID = studyID;
+		try {
+			java.util.Date parsed = simpleDate.parse(effective);
+			this.effectiveDate = new java.sql.Date(parsed.getTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		this.effectiveDate = effectiveDate;	
 	}
 	
-	private Study getStudy() {
-		return this.study;
-	}
-
-	private void removeVisit(int visitID) {
-		//find visit in list and remove it
+	Budget(int budgetID, int studyID, int version, java.sql.Date effective){
+		this.budgetID = budgetID;
+		this.studyID = studyID;		
+		this.effectiveDate = effective;
 	}
 	
-	private double getVisitCost(int visitID) {
-		Visit visit = null;
-		double cost = 0;
+	private int getBudgetID() { return budgetID; }
+	
+	int getStudyID() { return studyID; }
+	private void setStudyID(int studyID) { this.studyID = studyID; }
 		
-		return cost;
-	}	
+	int getVersion() { return version; }
+	private void setVersion(int version) { this.version = version; }
 	
-	private int addVisit(Visit visit) {
-		
-		int index = visits.indexOf(visit);
-		if(index==-1) {
-			visits.add(visit);
-			return 1;
-		} else {
-			return 0;
-			//some warning
-		}
-	}
+	java.sql.Date getEffectiveDate() { return effectiveDate; }
+	private void setEffective(java.sql.Date start) { this.effectiveDate = start; }
 	
-	private int removeVisit(Visit visit) {
-		int index = visits.indexOf(visit);
-		if(index==-1) {
-			//error
-			return 0;
-		} else {
-			visits.remove(index);
-			return 1;
-		}
-	}
-	
-
+	private Date getEndDate() { return endDate; }
+	private void setEndDate(java.sql.Date end) { this.endDate = end; }
 	 
 }

@@ -21,6 +21,8 @@ public class Provider {
 	private String npi;
 	private Date dob;
 	
+	private transient SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
+	
 	/**
 	 * Creates a Provider object with data that has been returned from the database
 	 * @param providerID prov_id used to uniquely identify a provider in the database
@@ -33,7 +35,7 @@ public class Provider {
 	public Provider(String lName, String fName, String mName, 
 			String bDay, String credentials, String licenseNum, String npi) {
 		
-		SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
+		
 		
 		this.lName = lName;
 		this.fName = fName;
